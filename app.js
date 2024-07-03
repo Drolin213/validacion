@@ -1,49 +1,51 @@
-var createError = require('http-errors');
-var express = require('express');
-var path = require('path');
-var cookieParser = require('cookie-parser');
-var logger = require('morgan');
+// Importación de módulos necesarios
+var createError = require('http-errors'); // Para crear errores HTTP
+var express = require('express'); // Framework web de Node.js
+var path = require('path'); // Para manejar rutas de archivos
+var cookieParser = require('cookie-parser'); // Middleware para analizar cookies
+var logger = require('morgan'); // Middleware para registrar solicitudes HTTP
 
-//para la variable de entorno 
-const dontenv = require("dotenv");
-dontenv.config()
+// Carga de variables de entorno desde archivo .env
+const dotenv = require("dotenv");
+dotenv.config();
 
-//la rutas para el router
-var indexRouter = require('./routes/index');
-var usersRouter = require('./routes/users');
-const cases = require('./routes/cases');
+// Importación de rutas definidas en archivos separados
+var indexRouter = require('./routes/index'); // Rutas para el punto de entrada '/'
+var usersRouter = require('./routes/users'); // Rutas relacionadas con usuarios '/users'
+const casesRouter = require('./routes/cases'); // Rutas relacionadas con casos '/cases'
 
-var app = express();
+var app = express(); // Creación de la aplicación Express
 
-// view engine setup
+// Configuración del motor de vistas y ubicación de las vistas
 app.set('views', path.join(__dirname, 'views'));
 app.set('view engine', 'hbs');
 
-app.use(logger('dev'));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+// Middlewares para manejar solicitudes HTTP
+app.use(logger('dev')); // Logger para registrar solicitudes en modo 'dev'
+app.use(express.json()); // Parseo de cuerpos de solicitud en formato JSON
+app.use(express.urlencoded({ extended: false })); // Parseo de cuerpos de solicitud en formato URL-encoded
+app.use(cookieParser()); // Middleware para analizar cookies
+app.use(express.static(path.join(__dirname, 'public'))); // Servicio de archivos estáticos en la carpeta 'public'
 
-// csedeclara la ruta come entra por el point
-app.use('/', indexRouter);
-app.use('/users', usersRouter);
-app.use("/cases", cases);
+// Configuración de las rutas de la aplicación
+app.use('/', indexRouter); // Usar las rutas definidas en indexRouter para '/'
+app.use('/users', usersRouter); // Usar las rutas definidas en usersRouter para '/users'
+app.use("/cases", casesRouter); // Usar las rutas definidas en casesRouter para '/cases'
 
-// catch 404 and forward to error handler
+// Middleware para capturar errores 404 y redirigir al index
 app.use(function(req, res, next) {
-  next(createError(404));
+  next(createError(404)); // Crear un error 404 para rutas no encontradas
 });
 
-// error handler
+// Middleware para manejar errores
 app.use(function(err, req, res, next) {
-  // set locals, only providing error in development
-  res.locals.message = err.message;
-  res.locals.error = req.app.get('env') === 'development' ? err : {};
+  // Establecer variables locales para las vistas
+  res.locals.message = err.message; // Mensaje de error
+  res.locals.error = req.app.get('env') === 'development' ? err : {}; // Detalles del error en entorno de desarrollo
 
-  // render the error page
-  res.status(err.status || 500);
-  res.render('error');
+  // Renderizar la página de error
+  res.status(err.status || 500); // Establecer el código de estado HTTP
+  res.render('error'); // Renderizar la plantilla de error ('error.hbs')
 });
 
-module.exports = app;
+module.exports = app; // Exportar la aplicación Express para usar en otros módulos
