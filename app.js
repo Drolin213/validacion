@@ -4,8 +4,14 @@ var path = require('path');
 var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 
+//para la variable de entorno 
+const dontenv = require("dotenv");
+dontenv.config()
+
+//la rutas para el router
 var indexRouter = require('./routes/index');
 var usersRouter = require('./routes/users');
+const cases = require('./routes/cases');
 
 var app = express();
 
@@ -19,8 +25,10 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+// csedeclara la ruta come entra por el point
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
+app.use("/cases", cases);
 
 // catch 404 and forward to error handler
 app.use(function(req, res, next) {

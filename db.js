@@ -1,3 +1,5 @@
+// conexion ala base de datos por js 
+
 const knex = require('knex')({
     client: 'mysql',
     connection: {
@@ -6,5 +8,8 @@ const knex = require('knex')({
       password: process.env.DB_PASSWORD,
       database: process.env.DB_NAME,
     },
+    pool: { min: 0, max: 10},
   });
+
+module.exports = knex;
     
