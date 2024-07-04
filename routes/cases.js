@@ -1,20 +1,23 @@
 var express = require('express'); // Importación de Express
 var router = express.Router(); // Creación de un router de Express
-var service = require("../models/cases"); // Importación del servicio para manejar casos desde ../models/cases
+var service_Case = require("../models/cases"); // Importación del servicio para manejar casos desde ../models/cases
+var service_Answers = require("../models/answers"); // Importación del servicio para manejar casos desde ../models/answers
+const { status } = require('express/lib/response');
 
 /* Función para listar todos los casos */
 const list = (req, res) => {
-    service.list()
-        .then((response) => res.json({ success: true, data: response })) // Enviar respuesta JSON con los casos listados
+    service_Case.list_case()
+        .then((response) => res.json({ success: true, response: response })) // Enviar respuesta JSON con los casos listados
         .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
 };
 
+
 /* Función para obtener un caso por ID */
 const single = (req, res) => {
-    service.single({ id: req.params.id }) // Llamar al servicio para obtener un caso por ID
+    service_Case.single_case({ id: req.params.id }) // Llamar al servicio para obtener un caso por ID
         .then((response) => {
             if (response) {
-                res.json({ success: true, data: response }); // Enviar respuesta JSON con el caso encontrado
+                res.json({ response }); // Enviar respuesta JSON con el caso encontrado
             } else {
                 res.status(404).json({ success: false, message: 'Case not found' }); // Enviar error 404 si no se encontró el caso
             }
@@ -24,34 +27,40 @@ const single = (req, res) => {
 
 /* Función para crear un nuevo caso */
 const createCase = (req, res) => {
-    const { nombre, descripcion, aparicion } = req.body; // Obtener datos del cuerpo de la solicitud
-    const cases = { nombre, descripcion, aparicion }; // Crear objeto con los datos del caso
-    service.create(cases) // Llamar al servicio para crear un nuevo caso
-        .then((response) => res.status(201).json({ success: true, data: response })) // Enviar respuesta JSON con el caso creado
-        .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
+    const { code_case, response_1, response_2 } = req.body; // Obtener datos del cuerpo de la solicitud
+
+    // Verificar si se deben crear casos o solo respuestas
+    if (code_case) {
+        const cases = { code_case }; // Objeto para insertar en T_CASES
+
+        service_Case.create_case(cases) // Llamar al servicio para crear un nuevo caso en T_CASES
+           .then((caseResponse) => {
+                const case_id = caseResponse
+
+                const answers = { response_1, response_2, case_id }; // Objeto para insertar en T_ANSWERS
+
+                return service_Answers.create_answers(answers); // Llamar al servicio para crear respuestas en T_ANSWERS                
+            })
+            .then((answersResponse) => { 
+                res.status(201).json({ status: true, message: 'Case and answers created successfully'});
+            })
+            .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
+    } else {
+        service_Answers.create_answers(answers) // Llamar al servicio para crear respuestas en T_ANSWERS directamente
+            .then((response) => {
+                res.status(201).json({ success: true, message: 'Answers created successfully', answers: response });
+            })
+            .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
+    }
 };
 
-/* Función para actualizar un caso por ID */
-const updateCase = (req, res) => {
-    const { id } = req.params; // Obtener el ID del caso a actualizar desde los parámetros de la URL
-    const { code_case } = req.body; // Obtener el nuevo código de caso desde el cuerpo de la solicitud
-    const cases = { code_case }; // Crear objeto con el nuevo código de caso
 
-    service.update({ id }, cases) // Llamar al servicio para actualizar el caso
-        .then((response) => {
-            if (response.success) {
-                res.json({ success: true, message: 'Case updated successfully' }); // Enviar mensaje de éxito si se actualizó el caso
-            } else {
-                res.status(404).json({ success: false, message: 'Case not found' }); // Enviar error 404 si no se encontró el caso
-            }
-        })
-        .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
-};
+
+
 
 // Definición de rutas y funciones asociadas
 router.get("/all", list); // Ruta para listar todos los casos
 router.get("/:id", single); // Ruta para obtener un caso por ID
 router.post("/create", createCase); // Ruta para crear un nuevo caso
-router.put("/update/:id", updateCase); // Ruta para actualizar un caso por ID
 
 module.exports = router; // Exportar el router de Express con las rutas definidas
