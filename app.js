@@ -11,9 +11,10 @@ dotenv.config();
 
 // Importación de rutas definidas en archivos separados
 var indexRouter = require('./routes/index'); // Rutas para el punto de entrada '/'
-var loginRouter = require('./routes/login'); // Rutas relacionadas con usuarios '/users'
+var loginRouter = require('./routes/login'); // Rutas relacionadas con login '/login'
 var casesRouter = require('./routes/cases'); // Rutas relacionadas con casos '/cases'
-var videoRouter = require('./routes/video'); // Rutas relacionadas con casos '/cases'
+var videoRouter = require('./routes/video'); // Rutas relacionadas con video '/video'
+var userRouter = require('./routes/users'); // Rutas relacionadas con casos '/users'
 
 var app = express(); // Creación de la aplicación Express
 
@@ -31,6 +32,7 @@ app.use(express.static(path.join(__dirname, 'public'))); // Servicio de archivos
 // Configuración de las rutas de la aplicación
 app.use('/', indexRouter); // Usar las rutas definidas en indexRouter para '/'
 app.use("/cases", casesRouter); // Usar las rutas definidas en casesRouter para '/cases'
+app.use("/users", userRouter); // Usar las rutas definidas en casesRouter para '/user'
 app.use("/authenticate", loginRouter); // Usar las rutas definidas en loginRouter para '/authenticate'
 app.use("/video", videoRouter); // Usar las rutas definidas en videoRouter para '/video'
 

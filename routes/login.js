@@ -1,22 +1,42 @@
-var express = require('express');
-var router = express.Router();
-var userService = require('../models/login'); // Importación del servicio de usuarios
+const express = require('express');
+const router = express.Router();
+const userService = require('../models/login'); // Importa el modelo de usuario para la autenticación
 
 /* Función para autenticar a un usuario */
-const login_user = async (req, res) => {
-    const { name_user, password } = req.body; // Obtener datos del cuerpo de la solicitud
+const loginUser = async (req, res) => {
+    const { name_user, password } = req.body; // Obtén los datos del cuerpo de la solicitud
 
-    // Autenticar usuario usando el servicio de usuarios
-    const result = await userService.authenticate_user(name_user, password);
+    try {
+        // Autenticar usuario utilizando el modelo de usuario
+        const result = await userService.authenticateUser(name_user, password);
 
-    if (result.success) {
-        res.json({ message: 'Autenticación exitosa', user: result.data });
-    } else {
-        res.status(401).json({ message: 'Credenciales inválidas' });
+        if (result.success) {
+            res.json({
+                response: {
+                    status: true,
+                    user: result.user // Devuelve los datos del usuario autenticado
+                }
+            });
+        } else {
+            res.status(401).json({
+                response: {
+                    status: false
+                },
+                message: result.message // Devuelve el mensaje de error desde el modelo
+            });
+        }
+    } catch (error) {
+        console.error('Error en la autenticación:', error);
+        res.status(500).json({
+            response: {
+                status: false
+            },
+            message: 'Error en la autenticación'
+        });
     }
 };
 
-// Definición de la ruta de login
-router.post('/login', login_user);
+// Define la ruta de login
+router.post('/login', loginUser);
 
 module.exports = router;

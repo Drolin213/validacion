@@ -1,24 +1,43 @@
+// userModel.js
+
 const db = require('../db');
+const bcrypt = require('bcryptjs');
 
 // Función para autenticar un usuario
-const authenticate_user = async (name_user, password) => {
+const authenticateUser = async (name_user, password) => {
     try {
-        // Consultar la base de datos para verificar el usuario y la contraseña
+        // Consultar la base de datos para verificar el usuario por nombre de usuario
         const user = await db('users')
-            .where({ name_user, password })
+            .where({ name_user })
             .first();
 
-        // Si el usuario existe, devolver los datos del usuario
-        if (user) {
-            return { success: true, data: user };
-        } else {
-            // Si no se encuentra el usuario, devolver un mensaje de error
-            return { success: false, message: 'Credenciales inválidas' };
+        if (!user) {
+            return { success: false, message: 'Credenciales inválidas: Usuario no encontrado' };
         }
+
+        // Verificar la contraseña utilizando bcrypt
+        const isMatch = await bcrypt.compare(password, user.password);
+        
+        if (!isMatch) {
+            return { success: false, message: 'Credenciales inválidas: Contraseña incorrecta' };
+        }
+
+        // Devolver la respuesta exitosa con los datos del usuario (sin incluir la contraseña)
+        return {
+            success: true,
+            user: {
+                id_user: user.id_user,
+                name_user: user.name_user,
+                rol_id: user.rol_id,
+                client_id: user.client_id,
+                access_Token: user.access_Token
+            }
+        };
+
     } catch (error) {
-        // Manejar cualquier error que ocurra durante la consulta
-        return { success: false, message: error.message };
+        console.error('Error en la autenticación:', error);
+        return { success: false, message: 'Error en la autenticación' };
     }
 };
 
-module.exports = { authenticate_user };
+module.exports = { authenticateUser };

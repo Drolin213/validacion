@@ -2,7 +2,7 @@ var express = require('express'); // Importación de Express
 var router = express.Router(); // Creación de un router de Express
 var service_Case = require("../models/cases"); // Importación del servicio para manejar casos desde ../models/cases
 var service_Answers = require("../models/answers"); // Importación del servicio para manejar casos desde ../models/answers
-const { status } = require('express/lib/response');
+
 
 /* Función para listar todos los casos */
 const list = (req, res) => {
