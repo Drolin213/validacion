@@ -39,7 +39,7 @@ const registerUser = async (req, res) => {
         const hashedPassword = await bcrypt.hash(password, 10);
 
         // Generar un token de acceso aleatorio
-        const accessToken = crypto.randomBytes(64).toString('hex');
+        const accessToken = crypto.randomBytes(256).toString('hex');
 
         // Crear el nuevo usuario
         const newUser = {

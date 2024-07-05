@@ -15,8 +15,10 @@ const authenticateUser = async (name_user, password) => {
             return { success: false, message: 'Credenciales inválidas: Usuario no encontrado' };
         }
 
+
+
         // Verificar la contraseña utilizando bcrypt
-        const isMatch = await bcrypt.compare(password, user.password);
+        const isMatch = bcrypt.compare(password, user.password);
         
         if (!isMatch) {
             return { success: false, message: 'Credenciales inválidas: Contraseña incorrecta' };
@@ -28,8 +30,6 @@ const authenticateUser = async (name_user, password) => {
             user: {
                 id_user: user.id_user,
                 name_user: user.name_user,
-                rol_id: user.rol_id,
-                client_id: user.client_id,
                 access_Token: user.access_Token
             }
         };

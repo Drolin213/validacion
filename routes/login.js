@@ -36,6 +36,8 @@ const loginUser = async (req, res) => {
     }
 };
 
+
+
 // Define la ruta de login
 router.post('/login', loginUser);
 
