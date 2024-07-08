@@ -25,6 +25,20 @@ const single = (req, res) => {
         .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
 };
 
+// Función para obtener un caso por ID cliente
+const casesByClientId = (req, res) => {
+    const client_id =  req.params.client_id; // Obtener el client_id de los parámetros de la solicitud
+    service_Case.cases_by_client_id(client_id) // Llamar al servicio para obtener los videos por client_id
+      .then((results) => {
+        if (results.length > 0) {
+          res.json({ results }); // Enviar respuesta JSON con los videos encontrados
+        } else {
+          res.status(404).json({ success: false, message: 'No videos found for this client_id' }); // Enviar error 404 si no se encontraron videos
+        }
+      })
+      .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
+  };
+
 /* Función para crear un nuevo caso */
 const createCase = (req, res) => {
     const { code_case, client_id , response_1, response_2 } = req.body; // Obtener datos del cuerpo de la solicitud
@@ -61,6 +75,7 @@ const createCase = (req, res) => {
 // Definición de rutas y funciones asociadas
 router.get("/all", list); // Ruta para listar todos los casos
 router.get("/:id", single); // Ruta para obtener un caso por ID
+router.get("/clienteid/:client_id", casesByClientId); // Ruta para obtener un Client_id por ID
 router.post("/create", createCase); // Ruta para crear un nuevo caso
 
 module.exports = router; // Exportar el router de Express con las rutas definidas

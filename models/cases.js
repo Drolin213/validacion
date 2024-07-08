@@ -39,5 +39,19 @@ const single_case = async (params = {}) => {
     }
 };
 
+// Función para obtener un solo video de la base de datos por sus parámetros
+const cases_by_client_id = async (client_id) => {
+    try {
+      // Buscar todos los videos asociados al client_id
+      const results = await db(process.env.T_CASES)
+        .select('id', 'code_case', 'client_id')
+        .where({ client_id });
+  
+      return results;  // Devolver todos los resultados encontrados
+    } catch (error) {
+      throw new Error(error.message);  // Lanzar un error con el mensaje correspondiente si ocurre un problema
+    }
+  };
+
 // Exportar las funciones para que estén disponibles para otros módulos
-module.exports = { list_case, create_case, single_case };
+module.exports = { list_case, create_case, single_case, cases_by_client_id };

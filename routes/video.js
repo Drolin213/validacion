@@ -141,7 +141,7 @@ const deleteVideo = async (req, res) => {
 router.get("/all", listvideo); // Ruta para crear un nuevo video
 router.post("/create", upload.single("video"), createVideo); // Ruta para crear un nuevo video
 router.get("/:id", singleVideo); // Ruta para obtener un caso por ID
-router.get("/clienteid/:client_id", videosByClientId); // Ruta para obtener un caso por ID
+router.get("/clienteid/:client_id", videosByClientId); // Ruta para obtener un Client_id por ID
 router.put("/updateVideo/:id", upload.single("video"), updateVideo); // Ruta para actualizar un video
 router.delete("/delete/:id", deleteVideo); // Ruta para eliminar un video
 

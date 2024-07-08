@@ -41,6 +41,7 @@ const single_video = async (params = {}) => {
     throw new Error(error.message);  // Lanzar un error con el mensaje correspondiente si ocurre un problema
   }
 };
+
 // Función para obtener un solo video de la base de datos por sus parámetros
 const videos_by_client_id = async (client_id) => {
   try {
@@ -54,8 +55,6 @@ const videos_by_client_id = async (client_id) => {
     throw new Error(error.message);  // Lanzar un error con el mensaje correspondiente si ocurre un problema
   }
 };
-
-
 
 // Función para actualizar un video en la base de datos por su ID
 const update_video = async (id, obj) => {
