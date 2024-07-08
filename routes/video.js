@@ -25,6 +25,21 @@ const singleVideo = (req, res) => {
     .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
 };
 
+// Función para obtener un caso por ID cliente
+const videosByClientId = (req, res) => {
+  const client_id =  req.params.client_id; // Obtener el client_id de los parámetros de la solicitud
+  service_Video.videos_by_client_id(client_id) // Llamar al servicio para obtener los videos por client_id
+    .then((results) => {
+      if (results.length > 0) {
+        res.json({ results }); // Enviar respuesta JSON con los videos encontrados
+      } else {
+        res.status(404).json({ success: false, message: 'No videos found for this client_id' }); // Enviar error 404 si no se encontraron videos
+      }
+    })
+    .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
+};
+
+
 // Configuración de multer para guardar archivos en una carpeta específica
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
@@ -126,6 +141,7 @@ const deleteVideo = async (req, res) => {
 router.get("/all", listvideo); // Ruta para crear un nuevo video
 router.post("/create", upload.single("video"), createVideo); // Ruta para crear un nuevo video
 router.get("/:id", singleVideo); // Ruta para obtener un caso por ID
+router.get("/clienteid/:client_id", videosByClientId); // Ruta para obtener un caso por ID
 router.put("/updateVideo/:id", upload.single("video"), updateVideo); // Ruta para actualizar un video
 router.delete("/delete/:id", deleteVideo); // Ruta para eliminar un video
 

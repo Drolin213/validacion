@@ -42,17 +42,19 @@ const single_video = async (params = {}) => {
   }
 };
 // Función para obtener un solo video de la base de datos por sus parámetros
-const single_video_Id_clienst = async (params = {}) => {
+const videos_by_client_id = async (client_id) => {
   try {
-    // Buscar y devolver el primer registro que coincida con los parámetros en la tabla T_VIDEOS
-    const result = await db(process.env.T_VIDEOS)
-      .where(params)
-      .first(); // Utiliza .first() para obtener solo el primer resultado
-    return result;  // Devolver el resultado encontrado
+    // Buscar todos los videos asociados al client_id
+    const results = await db(process.env.T_VIDEOS)
+      .select('id', 'name_video', 'link_video', 'client_id')
+      .where({ client_id });
+
+    return results;  // Devolver todos los resultados encontrados
   } catch (error) {
     throw new Error(error.message);  // Lanzar un error con el mensaje correspondiente si ocurre un problema
   }
 };
+
 
 
 // Función para actualizar un video en la base de datos por su ID
@@ -91,4 +93,4 @@ const delete_video = async (id) => {
   }
 };
 
-module.exports = { list_video, create_video, single_video, update_video, delete_video };
+module.exports = { list_video, create_video, single_video, update_video, delete_video, videos_by_client_id };
