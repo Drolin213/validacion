@@ -30,7 +30,9 @@ const authenticateUser = async (name_user, password) => {
             user: {
                 id_user: user.id_user,
                 name_user: user.name_user,
-                access_Token: user.access_Token
+                access_Token: user.access_Token,
+                rol_id: user.rol_id,
+                client_id: user.client_id 
             }
         };
 

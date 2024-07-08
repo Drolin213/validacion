@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Servidor: 127.0.0.1
--- Tiempo de generación: 05-07-2024 a las 16:43:30
+-- Tiempo de generación: 05-07-2024 a las 22:38:59
 -- Versión del servidor: 10.4.32-MariaDB
 -- Versión de PHP: 8.0.30
 
@@ -18,7 +18,7 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Base de datos: `bd_bancolombia`
+-- Base de datos: `mentory`
 --
 
 -- --------------------------------------------------------
@@ -42,36 +42,9 @@ CREATE TABLE `answers` (
 
 CREATE TABLE `cases` (
   `id` int(11) NOT NULL,
-  `code_case` int(11) NOT NULL
+  `code_case` int(11) NOT NULL,
+  `client_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
-
---
--- Volcado de datos para la tabla `cases`
---
-
-INSERT INTO `cases` (`id`, `code_case`) VALUES
-(1, 10001),
-(2, 10002),
-(3, 10003),
-(4, 10004),
-(5, 10005),
-(6, 10006),
-(7, 10007),
-(8, 10008),
-(9, 10009),
-(10, 10010),
-(11, 10011),
-(12, 10012),
-(13, 10013),
-(14, 10014),
-(15, 10015),
-(16, 8345),
-(17, 10016),
-(18, 10016),
-(19, 10018),
-(20, 10019),
-(21, 10021),
-(22, 10022);
 
 -- --------------------------------------------------------
 
@@ -83,6 +56,27 @@ CREATE TABLE `clients` (
   `client_id` int(11) NOT NULL,
   `client_name` varchar(100) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Volcado de datos para la tabla `clients`
+--
+
+INSERT INTO `clients` (`client_id`, `client_name`) VALUES
+(1, 'Cliente A'),
+(2, 'Cliente B'),
+(3, 'Cliente C'),
+(4, 'Cliente D'),
+(5, 'Cliente E'),
+(6, 'Cliente F'),
+(7, 'Cliente G'),
+(8, 'Cliente H'),
+(9, 'Cliente I'),
+(10, 'Cliente J'),
+(11, 'Cliente K'),
+(12, 'Cliente L'),
+(13, 'Cliente M'),
+(14, 'Cliente N'),
+(15, 'Cliente O');
 
 -- --------------------------------------------------------
 
@@ -107,7 +101,8 @@ CREATE TABLE `users` (
   `password` varchar(45) NOT NULL,
   `rol_id` int(11) NOT NULL,
   `client_id` int(11) NOT NULL,
-  `access_Token` varchar(260) NOT NULL
+  `access_Token` varchar(260) NOT NULL,
+  `token_Exp` int(40) DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
 -- --------------------------------------------------------
@@ -123,16 +118,28 @@ CREATE TABLE `videos` (
   `client_id` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
 
--- --------------------------------------------------------
-
 --
--- Estructura de tabla para la tabla `videos_has_cases`
+-- Volcado de datos para la tabla `videos`
 --
 
-CREATE TABLE `videos_has_cases` (
-  `videos_id` int(11) NOT NULL,
-  `cases_id` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_general_ci;
+INSERT INTO `videos` (`id`, `name_video`, `link_video`, `client_id`) VALUES
+(1, 'Video A', 'http://linka.com', 1),
+(2, 'Video B', 'http://linkb.com', 2),
+(3, 'Video C', 'http://linkc.com', 3),
+(4, 'Video D', 'http://linkd.com', 4),
+(5, 'Video E', 'http://linke.com', 5),
+(6, 'Video F', 'http://linkf.com', 6),
+(7, 'Video G', 'http://linkg.com', 7),
+(8, 'Video H', 'http://linkh.com', 8),
+(9, 'Video I', 'http://linki.com', 9),
+(10, 'Video J', 'http://linkj.com', 10),
+(11, 'Video K', 'http://linkk.com', 11),
+(12, 'Video L', 'http://linkl.com', 12),
+(13, 'Video M', 'http://linkm.com', 13),
+(14, 'Video N', 'http://linkn.com', 14),
+(15, 'Video O', 'http://linko.com', 15),
+(16, 'Demo-Flujos-Bancolombia-Creacion-SVE', 'http://linka.com', 1),
+(37, 'Prueba', 'URL del video', 1);
 
 --
 -- Índices para tablas volcadas
@@ -149,7 +156,8 @@ ALTER TABLE `answers`
 -- Indices de la tabla `cases`
 --
 ALTER TABLE `cases`
-  ADD PRIMARY KEY (`id`);
+  ADD PRIMARY KEY (`id`),
+  ADD KEY `client_id` (`client_id`);
 
 --
 -- Indices de la tabla `clients`
@@ -179,14 +187,6 @@ ALTER TABLE `videos`
   ADD KEY `client_id` (`client_id`);
 
 --
--- Indices de la tabla `videos_has_cases`
---
-ALTER TABLE `videos_has_cases`
-  ADD PRIMARY KEY (`videos_id`,`cases_id`),
-  ADD KEY `fk_videos_has_cases_cases1_idx` (`cases_id`),
-  ADD KEY `fk_videos_has_cases_videos1_idx` (`videos_id`);
-
---
 -- AUTO_INCREMENT de las tablas volcadas
 --
 
@@ -206,7 +206,7 @@ ALTER TABLE `cases`
 -- AUTO_INCREMENT de la tabla `clients`
 --
 ALTER TABLE `clients`
-  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `client_id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=16;
 
 --
 -- AUTO_INCREMENT de la tabla `rols`
@@ -224,7 +224,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT de la tabla `videos`
 --
 ALTER TABLE `videos`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT;
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=38;
 
 --
 -- Restricciones para tablas volcadas
@@ -235,6 +235,12 @@ ALTER TABLE `videos`
 --
 ALTER TABLE `answers`
   ADD CONSTRAINT `fk_answers_cases1` FOREIGN KEY (`cases_id`) REFERENCES `cases` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
+
+--
+-- Filtros para la tabla `cases`
+--
+ALTER TABLE `cases`
+  ADD CONSTRAINT `cases_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`client_id`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Filtros para la tabla `users`
@@ -248,13 +254,6 @@ ALTER TABLE `users`
 --
 ALTER TABLE `videos`
   ADD CONSTRAINT `videos_ibfk_1` FOREIGN KEY (`client_id`) REFERENCES `clients` (`client_id`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Filtros para la tabla `videos_has_cases`
---
-ALTER TABLE `videos_has_cases`
-  ADD CONSTRAINT `fk_videos_has_cases_cases1` FOREIGN KEY (`cases_id`) REFERENCES `cases` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION,
-  ADD CONSTRAINT `fk_videos_has_cases_videos1` FOREIGN KEY (`videos_id`) REFERENCES `videos` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
