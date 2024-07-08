@@ -5,6 +5,13 @@ const path = require("path");
 const fs = require("fs");
 const service_Video = require("../models/video");
 
+/* Función para listar todos los casos */
+const listvideo = (req, res) => {
+  service_Video.list_video()
+      .then((response) => res.json({ success: true, response: response })) // Enviar respuesta JSON con los casos listados
+      .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
+};
+
 // Función para obtener un caso por ID
 const singleVideo = (req, res) => {
   service_Video.single_video({ id: req.params.id }) // Llamar al servicio para obtener un caso por ID
@@ -116,6 +123,7 @@ const deleteVideo = async (req, res) => {
 };
 
 // Definición de rutas y funciones asociadas
+router.get("/all", listvideo); // Ruta para crear un nuevo video
 router.post("/create", upload.single("video"), createVideo); // Ruta para crear un nuevo video
 router.get("/:id", singleVideo); // Ruta para obtener un caso por ID
 router.put("/updateVideo/:id", upload.single("video"), updateVideo); // Ruta para actualizar un video
