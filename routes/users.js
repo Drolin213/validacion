@@ -15,7 +15,7 @@ const listuser = (req, res) => {
 
 /* Función para obtener un caso por ID */
 const singleuser = (req, res) => {
-    service_User.single_user({ id: req.params.id }) // Llamar al servicio para obtener un caso por ID
+    service_User.single_user({ id_user: req.params.id }) // Llamar al servicio para obtener un caso por ID
         .then((response) => {
             if (response) {
                 res.json({ response }); // Enviar respuesta JSON con el caso encontrado
