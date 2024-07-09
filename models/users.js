@@ -1,6 +1,7 @@
 // Importar el módulo de base de datos
 const db = require("../db");
 
+
 // Función para listar casos en la base de datos
 const list_user = async (params = {}) => {
     try {
@@ -13,6 +14,7 @@ const list_user = async (params = {}) => {
         return { success: false, error: error.message };  // Devolver fallo y el mensaje de error si ocurre uno
     }
 };
+
 
 // Función para crear un nuevo caso en la base de datos
 const create_user = async (obj) => {

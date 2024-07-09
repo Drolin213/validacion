@@ -26,17 +26,24 @@ const singleuser = (req, res) => {
         .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
 };
 
+const encryptPassword = async (password) => {
+    const saltRounds = 10;
+    const hashedPassword = await bcrypt.hash(password, saltRounds);
+    return hashedPassword;
+};
 
 /* Función para registrar un usuario */
+
 const registerUser = async (req, res) => {
     const { name_user, password, rol_id, client_id } = req.body; // Obtener datos del cuerpo de la solicitud
     if (!name_user || !password || !rol_id || !client_id) {
         return res.status(400).json({ success: false, message: 'All fields are required' });
     }
 
+    //esta funcion debe ir en el controlador
     try {
         // Encriptar la contraseña
-        const hashedPassword = await bcrypt.hash(password, 10);
+        const hashedPassword = await encryptPassword(password);
 
         // Generar un token de acceso aleatorio
         const accessToken = crypto.randomBytes(256).toString('hex');
