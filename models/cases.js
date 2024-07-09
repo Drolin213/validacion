@@ -7,7 +7,7 @@ const list_case = async (params = {}) => {
         // Consultar la base de datos para seleccionar registros de casos y sus respuestas
         const results = await db(process.env.T_CASES, process.env.T_ANSWERS)
         .leftJoin(process.env.T_ANSWERS, `${process.env.T_CASES}.id`, `${process.env.T_ANSWERS}.cases_id`)
-        .select(`${process.env.T_CASES}.id`,`${process.env.T_CASES}.client_id`,`${process.env.T_ANSWERS}.response_1`,`${process.env.T_ANSWERS}.response_2`);
+        .select(`${process.env.T_CASES}.id`,`${process.env.T_CASES}.code_case`,`${process.env.T_CASES}.client_id`,`${process.env.T_ANSWERS}.response_1`,`${process.env.T_ANSWERS}.response_2`);
         //Consulta join casos-respuestas
         return { success: true, cases: results};
     } catch (error) {
