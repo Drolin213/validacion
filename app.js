@@ -17,8 +17,9 @@ var loginRouter = require('./routes/login'); // Rutas relacionadas con login '/l
 var casesRouter = require('./routes/cases'); // Rutas relacionadas con casos '/cases'
 var videoRouter = require('./routes/video'); // Rutas relacionadas con video '/video'
 var userRouter = require('./routes/users'); // Rutas relacionadas con casos '/users'
+var clientsRouter = require('./routes/clients'); // Rutas relacionadas con casos '/clients'
 
- 
+
 var app = express(); // Creación de la aplicación Express
  
 // Configuración del motor de vistas y ubicación de las vistas
@@ -37,8 +38,10 @@ app.use(express.static(path.join(__dirname, 'public'))); // Servicio de archivos
 app.use('/', indexRouter); // Usar las rutas definidas en indexRouter para '/'
 app.use("/cases", casesRouter); // Usar las rutas definidas en casesRouter para '/cases'
 app.use("/users", userRouter); // Usar las rutas definidas en casesRouter para '/user'
+app.use("/clients", clientsRouter); // Usar las rutas definidas en casesRouter para '/user'
 app.use("/authenticate", loginRouter); // Usar las rutas definidas en loginRouter para '/authenticate'
 app.use("/video", videoRouter); // Usar las rutas definidas en videoRouter para '/video'
+
  
 // Middleware para capturar errores 404 y redirigir al index
 app.use(function(req, res, next) {
