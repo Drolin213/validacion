@@ -4,16 +4,16 @@ const db = require("../db");
 // Función para listar casos en la base de datos
 const list_case = async (params = {}) => {
     try {
-        // Consultar la base de datos para seleccionar registros según los parámetros proporcionados
-        const results = await db(process.env.T_CASES)
-            .where(params)  // Aplicar filtros de búsqueda opcionales
-            .select();      // Seleccionar todos los campos de los registros encontrados
-        return results ;  // Devolver éxito y los datos obtenidos
+        // Consultar la base de datos para seleccionar registros de casos y sus respuestas
+        const results = await db(process.env.T_CASES, process.env.T_ANSWERS)
+        .leftJoin(process.env.T_ANSWERS, `${process.env.T_CASES}.id`, `${process.env.T_ANSWERS}.cases_id`)
+        .select(`${process.env.T_CASES}.id`,`${process.env.T_CASES}.client_id`,`${process.env.T_ANSWERS}.response_1`,`${process.env.T_ANSWERS}.response_2`);
+        //Consulta join casos-respuestas
+        return { success: true, cases: results};
     } catch (error) {
         return { success: false, error: error.message };  // Devolver fallo y el mensaje de error si ocurre uno
     }
 };
-
 // Función para crear un nuevo caso en la base de datos
 const create_case = async (obj) => {
     try {
