@@ -43,10 +43,11 @@ const single_case = async (params = {}) => {
 const cases_by_client_id = async (client_id) => {
     try {
       // Buscar todos los videos asociados al client_id
-      const results = await db(process.env.T_CASES)
-        .select('id', 'code_case', 'client_id')
-        .where({ client_id });
-  
+      const results = await db(process.env.T_CASES,process.env.T_ANSWERS)
+        .leftJoin(process.env.T_ANSWERS, `${process.env.T_CASES}.id`, `${process.env.T_ANSWERS}.cases_id`)
+        .select(`${process.env.T_CASES}.id`,`${process.env.T_CASES}.code_case`,`${process.env.T_CASES}.client_id`,`${process.env.T_ANSWERS}.response_1`,`${process.env.T_ANSWERS}.response_2`)
+        .where(`${process.env.T_CASES}.client_id`, client_id); 
+        console.log(client_id,"  ", `${process.env.T_CASES}.client_id`)
       return results;  // Devolver todos los resultados encontrados
     } catch (error) {
       throw new Error(error.message);  // Lanzar un error con el mensaje correspondiente si ocurre un problema

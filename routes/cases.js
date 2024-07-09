@@ -33,7 +33,7 @@ const casesByClientId = (req, res) => {
         if (results.length > 0) {
           res.json({ results }); // Enviar respuesta JSON con los videos encontrados
         } else {
-          res.status(404).json({ success: false, message: 'No videos found for this client_id' }); // Enviar error 404 si no se encontraron videos
+          res.status(404).json({ success: false, message: 'Cases not found' }); // Enviar error 404 si no se encontraron videos
         }
       })
       .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
