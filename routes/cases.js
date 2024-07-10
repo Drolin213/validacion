@@ -41,11 +41,20 @@ const casesByClientId = (req, res) => {
 
 /* Función para crear un nuevo caso */
 const createCase = (req, res) => {
-    const { code_case, client_id , response_1, response_2 } = req.body; // Obtener datos del cuerpo de la solicitud
+    const { code_case, client_id, response_1, response_2 } = req.body; // Obtener datos del cuerpo de la solicitud
 
     // Verificar si se deben crear casos o solo respuestas
     if (code_case) {
-        const cases = { code_case, client_id }; // Objeto para insertar en T_CASES
+        const datenew= new Date()
+        const year = datenew.getFullYear();
+        const month = String(datenew.getMonth() + 1).padStart(2, '0'); // Los meses empiezan en 0
+        const day = String(datenew.getDate()).padStart(2, '0'); 
+        const hours = String(datenew.getHours()).padStart(2, '0');
+        const minutes = String(datenew.getMinutes()).padStart(2, '0');
+        const seconds = String(datenew.getSeconds()).padStart(2, '0');
+        const date= `${year}-${month}-${day}`
+        const time= `${hours}:${minutes}:${seconds}`
+        const cases = { code_case, client_id,date,time }; // Objeto para insertar en T_CASES
 
         service_Case.create_case(cases) // Llamar al servicio para crear un nuevo caso en T_CASES
            .then((caseResponse) => {
