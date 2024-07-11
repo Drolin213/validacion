@@ -1,9 +1,6 @@
 const db = require('../db');
 const bcrypt = require('bcryptjs');
 // Función para encriptar la contraseña del usuario
-
-
-
 // Verificar la contraseña utilizando bcrypt
 const isMatch = (password, hashedPassword) => {
     const match =  bcrypt.compareSync(password, hashedPassword);
