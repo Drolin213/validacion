@@ -1,6 +1,7 @@
 var express = require('express'); // Importación de Express
 var router = express.Router(); // Creación de un router de Express
 var service_Clients = require("../models/clients"); // Importación del servicio para manejar usuarios desde ../models/users
+const protected = require('../middleware/authMIddleware'); // Importa el middleware de autenticación
 
 /* Función para listar todos los casos */
 const listclients = (req, res) => {
@@ -45,7 +46,7 @@ const listclients = (req, res) => {
 }; */
 
 // Definición de rutas y funciones asociadas
-router.get("/all", listclients); // Ruta para listar todos los casos
+router.get("/all",protected, listclients); // Ruta para listar todos los casos
 /* router.get("/:id", singleuser); // Ruta para obtener un caso por ID
 router.post("/register", registerUser); // Ruta para registrar un nuevo usuario */
 

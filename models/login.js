@@ -1,7 +1,8 @@
 const db = require('../db');
 const bcrypt = require('bcryptjs');
-
 // Función para encriptar la contraseña del usuario
+
+
 
 // Verificar la contraseña utilizando bcrypt
 const isMatch = (password, hashedPassword) => {
@@ -13,22 +14,19 @@ const authenticateUser = async (name_user, password) => {
     try {
         // Obtener el usuario de la base de datos
         const user = await db('users').where({ name_user }).first();
-
         if (!user) {
             return { success: false, message: 'Credenciales inválidas: Usuario no encontrado' };
         }
 
         // Comparar la contraseña proporcionada con la contraseña hasheada almacenada en la base de datos
         const match =  isMatch(password, user.password);
-        console.log("Contraseñas:  ",password,"    ", user.password)
-        console.log(match)
-        if (match === true) {
+              
+              if (match === true) {
             return {
                 success: true,
                 user: {
                     id_user: user.id_user,
                     name_user: user.name_user,
-                    access_Token: user.access_Token,
                     rol_id: user.rol_id,
                     client_id: user.client_id
                 }

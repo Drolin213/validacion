@@ -4,6 +4,7 @@ const multer = require("multer");
 const path = require("path");
 const fs = require("fs");
 const service_Video = require("../models/video");
+const protected = require('../middleware/authMIddleware'); // Importa el middleware de autenticación
 
 /* Función para listar todos los casos */
 const listvideo = (req, res) => {
@@ -44,7 +45,7 @@ const videosByClientId = (req, res) => {
 const storage = multer.diskStorage({
   destination: (req, file, cb) => {
     const { client_id } = req.body; // Obtener client_id del cuerpo de la solicitud
-    const uploadDir = path.join(__dirname, "../public/videos", client_id); // Ruta donde se guardarán los archivos
+    const uploadDir = path.join("C:/xampp/htdocs/reports-FrontEnd/public/videos", client_id); // Ruta donde se guardarán los archivos
     
     // Crear la carpeta si no existe
     fs.mkdirSync(uploadDir, { recursive: true });
@@ -138,11 +139,11 @@ const deleteVideo = async (req, res) => {
 };
 
 // Definición de rutas y funciones asociadas
-router.get("/all", listvideo); // Ruta para crear un nuevo video
-router.post("/create", upload.single("video"), createVideo); // Ruta para crear un nuevo video
-router.get("/:id", singleVideo); // Ruta para obtener un caso por ID
-router.get("/clienteid/:client_id", videosByClientId); // Ruta para obtener un Client_id por ID
-router.put("/updateVideo/:id", upload.single("video"), updateVideo); // Ruta para actualizar un video
-router.delete("/delete/:id", deleteVideo); // Ruta para eliminar un video
+router.get("/all", protected,listvideo); // Ruta para listar videos
+router.post("/create",protected, upload.single("video"), createVideo); // Ruta para crear un nuevo video
+router.get("/:id", singleVideo); // Ruta para obtener un video por ID
+router.get("/clienteid/:client_id",protected,videosByClientId); // Ruta para obtener un video por ID de cliente
+router.put("/updateVideo/:id",protected, upload.single("video"), updateVideo); // Ruta para actualizar un video
+router.delete("/delete/:id",protected, deleteVideo); // Ruta para eliminar un video
 
 module.exports = router; // Exportar el router de Express con las rutas definidas

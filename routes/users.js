@@ -5,15 +5,16 @@ var bcrypt = require('bcrypt'); // Importación de la librería bcrypt para encr
 var service_User = require("../models/users"); // Importación del servicio para manejar usuarios desde ../models/users
 var service_Case = require("../models/cases"); // Importación del servicio para manejar casos desde ../models/cases
 var service_Answers = require("../models/answers"); // Importación del servicio para manejar respuestas desde ../models/answers
+const protected = require('../middleware/authMIddleware'); // Importa el middleware de autenticación
 
-/* Función para listar todos los casos */
+/* Función para listar todos los USUARIOS */
 const listuser = (req, res) => {
     service_User.list_user()
         .then((response) => res.json({ success: true, response: response })) // Enviar respuesta JSON con los casos listados
         .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
 };
 
-/* Función para obtener un caso por ID */
+/* Función para obtener un USUARIO por ID */
 const singleuser = (req, res) => {
     service_User.single_user({ id_user: req.params.id }) // Llamar al servicio para obtener un caso por ID
         .then((response) => {
@@ -66,8 +67,8 @@ const registerUser = async (req, res) => {
 };
 
 // Definición de rutas y funciones asociadas
-router.get("/all", listuser); // Ruta para listar todos los casos
-router.get("/:id", singleuser); // Ruta para obtener un caso por ID
-router.post("/register", registerUser); // Ruta para registrar un nuevo usuario
+router.get("/all",protected, listuser); // Ruta para listar todos los casos
+router.get("/:id",protected, singleuser); // Ruta para obtener un caso por ID
+router.post("/register",protected, registerUser); // Ruta para registrar un nuevo usuario
 
 module.exports = router; // Exportar el router de Express con las rutas definidas
