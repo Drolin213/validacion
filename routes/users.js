@@ -7,6 +7,57 @@ var service_Case = require("../models/cases"); // Importación del servicio para
 var service_Answers = require("../models/answers"); // Importación del servicio para manejar respuestas desde ../models/answers
 const protected = require('../middleware/authMIddleware'); // Importa el middleware de autenticación
 
+/**
+ * @swagger
+ * tags:
+ *   name: Users
+ *   description: Rutas para gestionar usuarios
+ */
+/**
+ * @swagger
+ * securitySchemes:
+ *   cookieAuth:
+ *     type: apiKey
+ *     in: cookie
+ *     name: access_token
+ *     description: Cookie de autenticación con el token de acceso.
+ */
+/**
+ * @swagger
+ * /users/all:
+ *   get:
+ *     summary: Listar todos los usuarios
+ *     tags: [Users]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de usuarios obtenida exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 response:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ */
 /* Función para listar todos los USUARIOS */
 const listuser = (req, res) => {
     service_User.list_user()
@@ -14,7 +65,60 @@ const listuser = (req, res) => {
         .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
 };
 
-/* Función para obtener un USUARIO por ID */
+
+
+/**
+ * @swagger
+ * /users/{id}:
+ *   get:
+ *     summary: Obtener un usuario por ID
+ *     tags: [Users]
+ *     security:
+ *        - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del usuario
+ *     responses:
+ *       200:
+ *         description: Usuario obtenido exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 response:
+ *                   type: object
+ *       404:
+ *         description: Usuario no encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ */
+
+/* Función para obtener un USUARIO por su id */
 const singleuser = (req, res) => {
     service_User.single_user({ id_user: req.params.id }) // Llamar al servicio para obtener un caso por ID
         .then((response) => {
@@ -33,8 +137,68 @@ const encryptPassword = async (password) => {
     return hashedPassword;
 };
 
+/**
+ * @swagger
+ * /users/register:
+ *   post:
+ *     summary: Registrar un nuevo usuario
+ *     tags: [Users]
+ *     security:
+ *       - cookieAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name_user:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *               rol_id:
+ *                 type: string
+ *               client_id:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Usuario registrado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 user:
+ *                   type: object
+ *       400:
+ *         description: Campos faltantes
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 message:
+ *                   type: string
+ *       500:
+ *         description: Error interno del servidor
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: false
+ *                 error:
+ *                   type: string
+ */
 /* Función para registrar un usuario */
-
 const registerUser = async (req, res) => {
     const { name_user, password, rol_id, client_id } = req.body; // Obtener datos del cuerpo de la solicitud
     if (!name_user || !password || !rol_id || !client_id) {

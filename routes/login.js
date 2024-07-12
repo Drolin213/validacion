@@ -6,7 +6,51 @@ var cookieParser = require('cookie-parser'); // Middleware para analizar cookies
 const app=express()
 app.use(cookieParser())
 
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Rutas de autenticación
+ */
 
+/**
+ * @swagger
+ * /authenticate/login:
+ *   post:
+ *     summary: Autenticar un usuario
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               name_user:
+ *                 type: string
+ *               password:
+ *                 type: string
+ *     responses:
+ *       200:
+ *         description: Usuario autenticado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 response:
+ *                   type: object
+ *                   properties:
+ *                     status:
+ *                       type: boolean
+ *                       example: true
+ *                     user:
+ *                       type: object
+ *       401:
+ *         description: Autenticación fallida
+ *       500:
+ *         description: Error en la autenticación
+ */
 /* Función para autenticar a un usuario */
 const loginUser = async (req, res) => {
     const { name_user, password } = req.body; // Obtén los datos del cuerpo de la solicitud
@@ -49,6 +93,39 @@ const loginUser = async (req, res) => {
     }
 };
 
+/**
+ * @swagger
+ * securitySchemes:
+ *   cookieAuth:
+ *     type: apiKey
+ *     in: cookie
+ *     name: access_token
+ *     description: Cookie de autenticación con el token de acceso.
+ */
+/**
+ * @swagger
+ * /authenticate/logout:
+ *   get:
+ *     summary: Cerrar sesión de un usuario
+ *     tags: [Auth]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Logout exitoso
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: 'Logout successful'
+ */
+/* Función para cerrar sesión de un usuario */
 router.get('/logout', (req, res) => {
     res.clearCookie('access_token'); // Limpiar la cookie 'access_token'
     res.json({ success: true, message: 'Logout successful' });

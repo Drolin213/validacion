@@ -3,6 +3,52 @@ const router = express.Router();
 const jwt = require('jsonwebtoken');
 const protected = require('../middleware/authMIddleware'); // Importa el middleware de autenticación
 
+
+/**
+ * @swagger
+ * tags:
+ *   name: Auth
+ *   description: Rutas de autenticación
+ */
+
+/**
+ * @swagger
+ * securitySchemes:
+ *   cookieAuth:
+ *     type: apiKey
+ *     in: cookie
+ *     name: access_token
+ *     description: Cookie de autenticación con el token de acceso.
+ */
+
+/**
+ * @swagger
+ * /auth/refresh:
+ *   post:
+ *     summary: Refrescar el token de acceso
+ *     tags: [Auth]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Token de acceso actualizado exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 accessToken:
+ *                   type: string
+ *       401:
+ *         description: Token de actualización inválido
+ *       403:
+ *         description: Token de actualización no proporcionado
+ */
+/* Ruta para refresh del token */
+
 // Ruta para refresh del token
 router.post('/refresh',protected, (req, res) => {
     const refreshToken = req.cookies.access_token; // Obtén el refreshToken desde la cookie

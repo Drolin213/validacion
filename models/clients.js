@@ -15,10 +15,10 @@ const list_clients = async (params = {}) => {
 };
 
 /* // Función para crear un nuevo caso en la base de datos
-const create_user = async (obj) => {
+const create_client = async (obj) => {
     try {
         // Insertar el objeto proporcionado en la tabla T_USERS de la base de datos
-        const results = await db(process.env.T_USERS).insert(obj);
+        const results = await db(process.env.T_CLIENTS).insert(obj);
         return results ;  // Devolver éxito y los datos del objeto insertado
     } catch (error) {
         return { success: false, error: error.message };  // Devolver fallo y el mensaje de error si ocurre uno

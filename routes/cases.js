@@ -3,17 +3,87 @@ var router = express.Router(); // Creación de un router de Express
 const protected = require('../middleware/authMIddleware'); // Importa el middleware de autenticación
 
 var service_Case = require("../models/cases"); // Importación del servicio para manejar casos desde ../models/cases
-var service_Answers = require("../models/answers"); // Importación del servicio para manejar casos desde ../models/answers
+var service_Answers = require("../models/answers"); // Importación del servicio para manejar respuestas desde ../models/answers
 
-/* Función para listar todos los casos */
+// Definición de rutas y funciones asociadas
+/**
+ * @swagger
+ * tags:
+ *   name: Cases
+ *   description: Operaciones relacionadas con los casos
+ */
+
+
+/**
+ * @swagger
+ * securitySchemes:
+ *   cookieAuth:
+ *     type: apiKey
+ *     in: cookie
+ *     name: access_token
+ *     description: Cookie de autenticación con el token de acceso.
+ */
+
+/**
+ * @swagger
+ * /all:
+ *   get:
+ *     summary: Listar todos los casos
+ *     tags: [Cases]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de casos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 response:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ */
 const list = (req, res) => {
     service_Case.list_case()
         .then((response) => res.json({ success: true, response: response })) // Enviar respuesta JSON con los casos listados
         .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
 };
 
-
-/* Función para obtener un caso por ID */
+/**
+ * @swagger
+ * /{id}:
+ *   get:
+ *     summary: Obtener un caso por ID
+ *     tags: [Cases]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del caso
+ *     responses:
+ *       200:
+ *         description: Caso encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 response:
+ *                   type: object
+ *       404:
+ *         description: Caso no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
 const single = (req, res) => {
     service_Case.single_case({ id: req.params.id }) // Llamar al servicio para obtener un caso por ID
         .then((response) => {
@@ -26,7 +96,38 @@ const single = (req, res) => {
         .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
 };
 
-// Función para obtener un caso por ID cliente
+/**
+ * @swagger
+ * /clienteid/{client_id}:
+ *   get:
+ *     summary: Obtener casos por ID de cliente
+ *     tags: [Cases]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: client_id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del cliente
+ *     responses:
+ *       200:
+ *         description: Casos encontrados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       404:
+ *         description: Casos no encontrados
+ *       500:
+ *         description: Error interno del servidor
+ */
 const casesByClientId = (req, res) => {
     const client_id =  req.params.client_id; // Obtener el client_id de los parámetros de la solicitud
     service_Case.cases_by_client_id(client_id) // Llamar al servicio para obtener los videos por client_id
@@ -38,9 +139,46 @@ const casesByClientId = (req, res) => {
         }
       })
       .catch((e) => res.status(500).json({ success: false, error: e.message })); // Manejo de errores
-  };
+};
 
-/* Función para crear un nuevo caso */
+/**
+ * @swagger
+ * /create:
+ *   post:
+ *     summary: Crear un nuevo caso
+ *     tags: [Cases]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               code_case:
+ *                 type: string
+ *               client_id:
+ *                 type: string
+ *               response_1:
+ *                 type: string
+ *               response_2:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Caso y respuestas creadas exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: 'Case and answers created successfully'
+ *       500:
+ *         description: Error interno del servidor
+ */
 const createCase = (req, res) => {
     const { code_case, client_id, response_1, response_2 } = req.body; // Obtener datos del cuerpo de la solicitud
 
@@ -79,13 +217,136 @@ const createCase = (req, res) => {
 };
 
 
+/**
+ * @swagger
+ * /all:
+ *   get:
+ *     summary: Listar todos los casos
+ *     tags: [Cases]
+ *     security:
+ *       - cookieAuth: []
+ *     responses:
+ *       200:
+ *         description: Lista de casos
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 success:
+ *                   type: boolean
+ *                   example: true
+ *                 response:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ */
+router.get("/all", protected, list); // Ruta para listar todos los casos
 
+/**
+ * @swagger
+ * /{id}:
+ *   get:
+ *     summary: Obtener un caso por ID
+ *     tags: [Cases]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del caso
+ *     responses:
+ *       200:
+ *         description: Caso encontrado
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 response:
+ *                   type: object
+ *       404:
+ *         description: Caso no encontrado
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get("/:id", protected, single); // Ruta para obtener un caso por ID
 
+/**
+ * @swagger
+ * /clienteid/{client_id}:
+ *   get:
+ *     summary: Obtener casos por ID de cliente
+ *     tags: [Cases]
+ *     security:
+ *       - cookieAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: client_id
+ *         schema:
+ *           type: string
+ *         required: true
+ *         description: ID del cliente
+ *     responses:
+ *       200:
+ *         description: Casos encontrados
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 results:
+ *                   type: array
+ *                   items:
+ *                     type: object
+ *       404:
+ *         description: Casos no encontrados
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.get("/clienteid/:client_id", protected, casesByClientId); // Ruta para obtener un Client_id por ID
 
-// Definición de rutas y funciones asociadas
-router.get("/all",protected, list); // Ruta para listar todos los casos
-router.get("/:id",protected, single); // Ruta para obtener un caso por ID
-router.get("/clienteid/:client_id",protected, casesByClientId); // Ruta para obtener un Client_id por ID
-router.post("/create",createCase); // Ruta para crear un nuevo caso
+/**
+ * @swagger
+ * /create:
+ *   post:
+ *     summary: Crear un nuevo caso
+ *     tags: [Cases]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             properties:
+ *               code_case:
+ *                 type: string
+ *               client_id:
+ *                 type: string
+ *               response_1:
+ *                 type: string
+ *               response_2:
+ *                 type: string
+ *     responses:
+ *       201:
+ *         description: Caso y respuestas creadas exitosamente
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 status:
+ *                   type: boolean
+ *                   example: true
+ *                 message:
+ *                   type: string
+ *                   example: 'Case and answers created successfully'
+ *       500:
+ *         description: Error interno del servidor
+ */
+router.post("/create", createCase); // Ruta para crear un nuevo caso
 
 module.exports = router; // Exportar el router de Express con las rutas definidas
