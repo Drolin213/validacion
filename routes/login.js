@@ -51,7 +51,6 @@ const loginUser = async (req, res) => {
 
 router.get('/logout', (req, res) => {
     res.clearCookie('access_token'); // Limpiar la cookie 'access_token'
-    console.log("Deslogeado exitoso")
     res.json({ success: true, message: 'Logout successful' });
 });
 

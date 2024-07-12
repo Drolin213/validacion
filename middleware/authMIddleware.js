@@ -8,7 +8,6 @@ const protected = (req, res, next) => {
     try {
         const data = jwt.verify(token, process.env.SECRET_JWT_KEY);
         req.user = data;
-        console.log('pasa por aca:', data )
         next();
     } catch (error) {
 

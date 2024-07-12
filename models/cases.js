@@ -50,7 +50,6 @@ const cases_by_client_id = async (client_id) => {
         .leftJoin(process.env.T_CLIENTS, `${process.env.T_CASES}.client_id`,`${process.env.T_CLIENTS}.client_id`)
         .select(`${process.env.T_CASES}.id`,`${process.env.T_CASES}.code_case`,`${process.env.T_CASES}.client_id`,`${process.env.T_CASES}.date`,`${process.env.T_CASES}.time`,`${process.env.T_ANSWERS}.response_1`,`${process.env.T_ANSWERS}.response_2`,`${process.env.T_CLIENTS}.client_name`)
         .where(`${process.env.T_CASES}.client_id`, client_id); 
-        console.log(results)
       return results;  // Devolver todos los resultados encontrados
     } catch (error) {
       throw new Error(error.message);  // Lanzar un error con el mensaje correspondiente si ocurre un problema

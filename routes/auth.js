@@ -30,7 +30,6 @@ router.post('/refresh',protected, (req, res) => {
 
         res.json({ success: true, accessToken });
     } catch (error) {
-        console.error('Error refreshing token:', error);
         res.status(401).json({ success: false, message: 'Invalid refresh token' });
     }
 });
