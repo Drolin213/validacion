@@ -41,6 +41,9 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
+app.get('/check-env', (req, res) => {
+  res.send(`NODE_ENV: ${process.env.NODE_ENV}`);
+});
 // Configuración de Swagger
 const options = {
   definition: {
@@ -83,5 +86,7 @@ app.use(function(err, req, res, next) {
   res.status(err.status || 500);
   res.render('error');
 });
+
+
 
 module.exports = app;

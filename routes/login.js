@@ -13,6 +13,7 @@ app.use(cookieParser())
  *   description: Rutas de autenticación
  */
 
+
 /**
  * @swagger
  * /authenticate/login:
@@ -62,15 +63,12 @@ const loginUser = async (req, res) => {
                 process.env.SECRET_JWT_KEY,
                 {expiresIn:'15m'}) 
             res
-            .cookie('access_token',token,{
-                httpOnly:true,
-                secure:process.env.NODE_ENV==="production",
-                sameSite:'strict'
-            })
+         
             .json({
                 response: {
                     status: true,
-                    user: result.user // Devuelve los datos del usuario autenticado
+                    user: result.user,
+                    access_token:token // Devuelve los datos del usuario autenticado
                 }
             });
             

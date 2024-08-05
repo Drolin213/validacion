@@ -67,13 +67,7 @@ router.post('/refresh',protected, (req, res) => {
             { expiresIn: '1h' }
         );
 
-        res.cookie('access_token', accessToken, {
-            httpOnly: true,
-            secure: process.env.NODE_ENV === 'production',
-            sameSite: 'strict'
-
-        });
-
+       
         res.json({ success: true, accessToken });
     } catch (error) {
         res.status(401).json({ success: false, message: 'Invalid refresh token' });

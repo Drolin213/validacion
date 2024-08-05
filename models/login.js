@@ -7,6 +7,7 @@ const isMatch = (password, hashedPassword) => {
     return match;
 };
 
+
 const authenticateUser = async (name_user, password) => {
     try {
         // Obtener el usuario de la base de datos
